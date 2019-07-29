@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>World Bank Date Visualizer</title>
+    <script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.6.0/dist/progressbar.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <style type="text/css">
+        #container {
+            width: 200px;
+        }
+        
+        #platform {
+        width: 1300px;
+        height: 70px;
+        margin-top: 10px;
+        }
+        select {
+        margin: 10px;
+        }
+        #percent {
+        font-size: 50px;
+        display: inline;
+        float: right;
+        line-height: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+      <div id="regions_div" style="width: 1400px; height: 800px;"></div>
+      <div id="platform">
+        <p id="percent">0</p>
+      </div>
+    </div>
+    <script src="prepare data/categories.js"></script>
+    <script src="prepare data/ISOcodes.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

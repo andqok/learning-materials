@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.6.0/dist/progressbar.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<style type="text/css">
+    #container {
+        width: 200px;
+    }
+</style>
+</head>
+
+<body>
+    <div id="regions_div" style="width: 1400px; height: 800px;"></div>
+    <div id="container"></div>
+    <script src="indices.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['geochart'],
+            // Note: you will need to get a mapsApiKey for your project.
+            // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+            'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+        });
+        //google.charts.setOnLoadCallback(getApis);
+        
+    const year = 2007
+    var bar = new ProgressBar.Circle(container, {
+      color: '#aaa',
+      // This has to be the same size as the maximum width to
+      // prevent clipping
+      strokeWidth: 4,
+      trailWidth: 1,
+      //easing: 'easeInOut',
+      //duration: 1400,
+      text: {
+        autoStyleContainer: false
+      },
+      from: { color: '#aaa', width: 1 },
+      to: { color: '#333', width: 4 },
+      // Set default step function for all animate calls
+      step: function(state, circle) {
+        circle.path.setAttribute('stroke', state.color);
+        circle.path.setAttribute('stroke-width', state.width);
+
+        var value = Math.round(circle.value() * 100);
+        if (value === 0) {
+          //circle.setText('');
+        } else {
+          //circle.setText(value);
+        }
+
+      }
+    });
+
+    function drawRegionsMap(stats) {
+        var data = google.visualization.arrayToDataTable(stats);
+
+        var options = {
+            colorAxis: {
+                //minValue: 0,
+                colors: ['red', 'white', 'green'],
+            },
+            //region: '150'
+        };
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+        chart.draw(data, options);
+    }
+    function getApis(){
+        var res = [['Country', 'Popularity']]
+        var fullLen = Object.keys(ISOCodes).length
+        var len = 0
+
+        for (let code in ISOCodes) {
+            const it = 'SL.TLF.BASC.MA.ZS'
+            const url = 'http://api.worldbank.org/v2/countries/' + code + '/indicators/' + it + '?format=json'
+            fetch(url)
+            .then(function(response){
+                return response.text()
+            }).then(function(text){
+                var a = JSON.parse(text)
+                var country = ISOCodes[code]
+                var value = findYear(a[1])
+                
+                if (value == null || Math.abs(value) > 14) {
+                    //console.log(country)
+                } else {
+                    res.push([ country, Math.floor(value) ])
+                    if (len % 12 === 0) {
+                        bar.animate((len / fullLen).toFixed(3))
+                        console.log((len / fullLen).toFixed(3))
+                    }
+                }
+                len += 1
+                console.log(len)
+                if (len === fullLen) {
+                    bar.animate(1)
+                    console.log('here')
+                    drawRegionsMap(res)
+                }
+            })
+        }
+    }
+    function findYear(i){
+        for (let obj in i) {
+            if (+i[obj]['date'] === year) {
+                return i[obj]['value']
+            }
+        }
+        return null
+    }
+var res = {}
+for (let item in indices) {
+    var obj = indices[item]['children']
+    var obj2
+    var len = Object.keys(obj).length
+    obj2 = obj[0]
+
+    if (res[obj2.id] == null) {
+        res[obj2.id] = {}
+    }
+    var levelDeeper = obj[len - 1]['children']
+    for (let a in levelDeeper) {
+        var  text = levelDeeper[a]['children'][0]['data-text']
+        var index = levelDeeper[a]['children'][0]['href'].split(/[/?]/)[2]
+        res[obj2.id][text] = index
+    }
+}
+console.log(res)
+    </script>
+</body>
+</html>

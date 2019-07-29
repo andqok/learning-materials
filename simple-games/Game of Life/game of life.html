@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Life</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  .frame {
+      display: flex;
+      flex-wrap: wrap;
+      width: 1000px;
+      height: 1000px;
+      border: 2px solid rgb(0, 0, 0);
+  }
+  .justdiv {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+  }
+  </style>
+</head>
+<body>
+<script>
+    var hist = {
+
+    }
+    var curr = []
+    const $ = {
+        create: function (i) {
+            return document.createElement(i)
+        },
+        div: function() {
+            return document.createElement('div')
+        },
+        get: function (i) {
+            return document.getElementById(i)
+        }
+    }
+    const frame = $.create('div')
+    frame.classList += 'frame'
+    const dimensions = 50
+    const width = 1000
+    var row, col
+    var cells = {}
+    var count = 1
+    var changedCells = []
+    var changedCellsCount = []
+    var stop = false
+
+    for (let number = 1; number <= dimensions * dimensions; number += 1) {
+        let div = $.div()
+        div.id = number
+        div.classList += 'justdiv'
+        div.addEventListener('mousedown', function(event) {
+            cells[event.target.id] = true
+            event.target.style.backgroundColor = '#0000ff'
+        })
+        frame.appendChild(div)
+    }
+    document.body.appendChild(frame)
+    const button = $.create('button')
+    button.addEventListener('click', () => {
+        curr.push(cells)
+        //steps(cells)
+        random()
+    })
+    button.textContent = 'Start'
+    document.body.appendChild(button)
+
+    const button2 = $.create('button')
+    button2.addEventListener('click', () => {
+        curr.push(cells)
+        steps(cells)
+    })
+    button2.textContent = 'Start My Play'
+    document.body.appendChild(button2)
+
+    function replay(obj) {
+        //let obj = curr[curr.length - 1]
+        clear()
+        for (let prop in obj) {
+            $.get(prop).style.backgroundColor = '#0000ff'
+        }
+        console.log(obj)
+        steps(obj)
+    }
+
+    function clear() {
+        for (let number = 1; number <= dimensions * dimensions; number += 1) {
+            $.get(number).style.backgroundColor = '#fff'
+        }
+        cells = {}
+    }
+
+    function random() {
+        clear()
+        var res = {}
+        while (Object.keys(res).length < 300) {
+            res[Math.floor(Math.random() * 2500)] = true
+        }
+        steps(res)
+    }
+
+    function steps(cellsOld) {
+        cells = cellsOld
+        let cellsNew = {}
+        let action = 0
+        Object.assign(cellsNew, cellsOld)
+
+        for (let cell in cellsOld) {
+            let cellNeighbors = getNeighbors(+cell, true, cellsNew, cellsOld)
+            let liveCells = countLiveCells(cellNeighbors)
+            if (liveCells < 2 || liveCells > 3) {
+                action += 1
+                delete cellsNew[cell]
+                if ($.get(cell + '')) {
+                    changedCells.push(cell)
+                    $.get(cell + '').style.backgroundColor = 'white'
+                }
+            }
+        }
+        if (action > 0 && checkDynamics()) {
+            count += 1
+            changedCells = []
+            setTimeout( () => steps(cellsNew), 5)
+        } else {
+            console.log('finished ' + count)
+            clear()
+            count = 0
+            hist[changedCellsCount.length] = cellsNew
+            if (!stop) {
+                setTimeout( () => random(), 500)
+            }
+        }
+        
+    }
+
+    function checkDynamics () {
+        changedCellsCount.push(changedCells.length)
+        if (changedCellsCount.length > 8 && 
+            changedCellsCount[changedCellsCount.length - 1] === changedCellsCount[changedCellsCount.length - 3]) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    function getNeighbors(cell, digDeeper, cellsNew, cellsOld) {
+        let neighbors = [
+                cell - dimensions,
+                cell - dimensions + 1,
+                cell - dimensions - 1,
+                cell + dimensions,
+                cell + dimensions + 1,
+                cell + dimensions - 1,
+                cell + 1,
+                cell - 1
+        ].filter(el => el > 0)
+         .filter(el => el <= 2500)
+        
+        if (digDeeper) {
+            // processing neighbors of alive cells, which may become alive
+            neighbors.forEach(deadNeighbor => {
+                let count = countLiveCells(
+                        getNeighbors(deadNeighbor, false, cellsNew, cellsOld)
+                    )
+                if (count === 3) {
+                    cellsNew[deadNeighbor] = true
+                    if (+deadNeighbor < 0 || +deadNeighbor > 2500) {
+
+                    } else {
+                        changedCells.push(deadNeighbor)
+                        $.get(deadNeighbor).style.backgroundColor = '#0000ff'
+                    }
+                    
+                }
+            })
+        }
+        let res = {}
+        neighbors.forEach(neighbor => {
+            res[neighbor] = isLive( neighbor )
+        })
+        return res
+
+        function isLive(cell) {
+            if (cellsOld[cell] === true) {
+                return 1
+            } else {
+                return 0
+            }
+        }
+    }
+
+    function countLiveCells(neighbors) {
+        if (Object.keys(neighbors).length > 2) {
+            return Object.values(neighbors).reduce( (x, y) => x + y )
+        }
+    }
+
+    function getTime() {
+        return Math.floor(Math.random(1400 ))
+    }
+
+</script>
+</body>
+</html>

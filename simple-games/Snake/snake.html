@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Life</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  .frame {
+      display: flex;
+      flex-wrap: wrap;
+      width: 1000px;
+      height: 1000px;
+      border: 2px solid rgb(0, 0, 0);
+  }
+  .justdiv {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+  }
+
+  </style>
+
+</head>
+<body>
+<script>
+    const $ = {
+        create: function (i) {
+            return document.createElement(i)
+        },
+        div: function() {
+            return document.createElement('div')
+        },
+        get: function (i) {
+            return document.getElementById(i)
+        }
+    }
+    const frame = $.create('div')
+    frame.classList += 'frame'
+    const dimensions = 50
+    const width = 1000
+    var snakeHistory = []
+    var snake = []
+    document.onkeydown = function (e) {
+      switch (e.keyCode) {
+        case 100:
+            direction = 'W'
+            break;
+        case 102:
+            direction = 'E'
+            break;
+        case 104:
+            direction = 'N'
+            break;
+        case 98:
+            direction = 'S'
+            break;
+
+        default:
+            return; // Do nothing for the rest
+      }
+    };
+    var snakePrev
+    var timer
+    var changeToday = 0
+    var direction
+    var food
+    var coordinates = {
+                'N': -dimensions,
+                'NE': -dimensions + 1,
+                'NW': -dimensions - 1,
+                'S': dimensions,
+                'SE': dimensions + 1,
+                'SW': dimensions - 1,
+                'E': 1,
+                'W': -1,
+            }
+    
+    for (let number = 1; number <= dimensions * dimensions; number += 1) {
+        let div = $.div()
+        div.id = number
+        div.classList += 'justdiv'
+        frame.appendChild(div)
+    }
+    document.body.appendChild(frame)
+
+    const button = $.create('button')
+    button.addEventListener('click', step)
+    button.textContent = 'Kylie'
+    document.body.appendChild(button)
+    startGame()
+
+
+    function step() {
+        var newCell = coordinates[direction] + snake[snake.length - 1]
+        var newSnake = snake
+        if (newCell <= 0) {
+            newCell = dimensions * dimensions - newCell
+        } else if (newCell > dimensions * dimensions) {
+            newCell = newCell - dimensions * dimensions
+        }
+        if (newCell != food) {
+            newSnake = snake.slice(1)
+        } else {
+            generateFood()
+        }
+        newSnake.push(newCell)
+        processCell(snake[0], 'remove')
+        processCell(newCell, 'add')
+        console.log(snake.length)
+        snake = newSnake
+        window.setTimeout(step, 100)
+    }
+
+    function startGame() {
+        var snakeLength = Math.floor(Math.random() * 5) + 1
+        var initialCell = Math.floor(Math.random() * dimensions * dimensions)
+        snake = []
+        
+        snake.push(initialCell)
+        processCell(initialCell, 'add')
+
+        while (snakeLength) {
+            var next = getNext()
+            snake.push(next)
+            processCell(next, 'add')
+            snakeLength -= 1
+        }
+
+        generateFood()
+
+        function getNext() {
+            direction = ['N', 'S', 'E', 'W'][Math.floor( Math.random() * 3 )] 
+            var next = snake[snake.length - 1] + coordinates[ direction ]
+
+            if (snake.includes(next)) {
+                return getNext()
+            } else {
+                return next
+            }
+        }
+    }
+
+    function processCell(cell, action) {
+        cell = +cell
+        if (cell > 0 && cell <= dimensions * dimensions) {
+            switch (action) {
+                case 'remove':
+                    $.get(cell).style.backgroundColor = 'white'
+                    break
+                case 'add':
+                    $.get(cell).style.backgroundColor = '#0000ff'
+                    break
+            }
+        }
+        changeToday += 1
+    }
+
+    function generateFood() {
+        var newCell = Math.floor(Math.random() * dimensions * dimensions)
+        if (snake.includes(newCell)) {
+            return generateFood()
+        } else {
+            food = newCell
+            processCell(food, 'add')
+        }
+    }
+    
+
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Document</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<script src="links to json.js"></script>
+<script>
+links = links.div.section
+const res = {}
+links.forEach(section => {
+  let name = section.h3._id
+  res[name] = {}
+  let arr
+  if (Array.isArray(section.ul)) {
+    arr = section.ul
+  } else if (Array.isArray(section.ul.li)) {
+    arr = section.ul.li
+  } else {
+    console.log('????')
+  }
+  if (arr[0] && arr[0]['_class'] === 'portalLinks') {
+    arr = arr[1]['li']
+  }
+  arr.forEach(item => {
+    item = item.a
+    res[name][item.__text] = item._href.split(/[/?]/)[2]
+  })
+})
+document.body.innerText = JSON.stringify(res)
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style type="text/css">
+    * {
+      text-decoration: none; }
+
+    body {
+      background: radial-gradient(black 15%, transparent 16%) 0 0, radial-gradient(black 15%, transparent 16%) 8px 8px, radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px, radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
+      background-color: #282828;
+      background-size: 16px;
+      font-family: "Arial", sans-serif; }
+
+    .wrapper {
+      width: 900px;
+      margin: 0 auto; }
+
+    .search-area {
+      margin-top: 20%;
+      text-align: center; }
+
+    h1 {
+      color: #fff;
+      font-size: 40px;
+      letter-spacing: 4px; }
+
+    #search input {
+      background: none repeat scroll 0 0 #fff;
+      border: 0 none;
+      color: #7F7F7F;
+      width: 300px;
+      height: 40px;
+      margin: 0;
+      font-size: 20px;
+      line-height: 20px;
+      font-weight: bold; }
+
+    #search button {
+      display: inline-block;
+      line-height: 37px;
+      width: 40px;
+      height: 40px;
+      box-sizing: border-box;
+      margin-left: -45px;
+      padding-bottom: 4px;
+      text-indent: -9999em;
+      border: 2px solid #fff;
+      cursor: pointer;
+      background: url("../img/search.png") no-repeat scroll center center #50BCD4; }
+
+    .results {
+      width: 100%;
+      height: 600px;
+      padding: 10px; }
+
+    .btn-primary {
+      background-color: #fff;
+      padding: 10px; }
+
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="search-area">
+      <h1>Woogle</h1>
+      <form id="search" method="get">
+        <input class="searchbox" type="text">
+          <button id="buttonka" type="submit">Submit</button>
+        </form>
+      </div>
+    <div class="results"></div>
+  </div>
+  <script crossorigin="anonymous" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <link href="https://code.jquery.com/ui/1.12.1/themes/vader/jquery-ui.css" rel="stylesheet">
+  <script crossorigin="anonymous" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('#buttonka').click(function(){
+        let searchTerm = $('.searchbox').val();
+        let url = "https://en.wikipedia.org/w/api.php?action=opensearch&search="+ searchTerm +"&format=json";
+        console.log(url);
+        $.ajax({
+          url: url,
+          contentType: "application/json; charset=utf-8",
+          async: true,
+          dataType: "jsonp",
+
+          success: function (data) {
+            console.log(data);
+            $('.result').html('');
+            for (let i=0; i< data[1].length; i += 1) {
+              console.log(data[0]);
+              console.log(data[1][i]);
+              $('.results').prepend("<div><div class='btn-primary'><a href="+data[3][i]+"><h2>" + data[1][i]+ "</h2>" + "<p>" + data[2][i] + "</p></a></div></div><hr>" );
+            }
+          },
+          error: function (errorMessage) {
+            console.log(errorMessage);
+          }
+        });
+        return false
+      });
+    });
+
+  </script>
+</body>
+</html>
