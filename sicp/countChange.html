@@ -1,0 +1,44 @@
+<doctype HTML>
+<html>
+<head>
+</head>
+<body>
+<h1>
+	Hello!
+</h1>
+<script>
+console.log(countChange(+prompt('Add amount'), 5))
+function countChange(amount, kindsOfCoins) {
+	return cc(amount, kindsOfCoins)
+}
+function cc(amount, kindsOfCoins) {
+	if (amount === 0) {
+		return 1
+	} else if ((amount < 0) || (kindsOfCoins === 0)) {
+		return 0
+	} else {
+		return cc(amount, kindsOfCoins - 1) + cc(amount - firstDenomination(kindsOfCoins), kindsOfCoins)
+	}
+}
+function firstDenomination(kindsOfCoins) {
+	switch (kindsOfCoins) {
+		case 1: 
+			return 1
+			break;
+		case 2:
+			return 5
+			break;
+		case 3: 
+			return 10
+			break;
+		case 4:
+			return 25
+			break;
+		case 5:
+			return 50
+			break;
+	}
+}
+</script>
+</body>
+</html>

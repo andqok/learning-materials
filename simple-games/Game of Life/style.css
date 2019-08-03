@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10px, 1fr));
+}
+
+body div:hover {
+  background-color: blue;
+}
+
+.alive {
+  background-color: green;
+}

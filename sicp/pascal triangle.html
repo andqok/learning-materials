@@ -1,0 +1,28 @@
+<doctype HTML>
+<html>
+<head>
+</head>
+<body>
+<h1>
+	Hello!
+</h1>
+<script>
+console.log( pascal(+prompt('Enter n: ')) )
+function pascal(n) {
+	if (n === 1) {
+		return [ [1] ]
+	}
+	var res = pascal(n - 1)
+	var prev = res[res.length - 1].slice()
+	res[res.length] = [1]
+	while (prev.length > 1) {
+		res[res.length - 1].push(prev[prev.length - 1] + (prev[prev.length - 2]))
+		prev.pop()
+	}
+	res[res.length - 1].push(1)
+	return res
+}
+
+</script>
+</body>
+</html>
