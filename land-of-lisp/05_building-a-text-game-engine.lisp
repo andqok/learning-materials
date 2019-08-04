@@ -1,13 +1,3 @@
-(defvar *arch-enemy* nil)
-(defun pudding-eater (person)
-  (cond ((eq person 'henry) (setf *arch-enemy* 'stupid-lisp-alien)
-                           '(curse you lisp alien - you ate my pudding))
-        ((eq person 'johnny) (setf *arch-enemy* 'useless-old-johnny)
-                            '(i hope you choked on my pudding johnny))
-        (t                  '(why you eat my pudding stranger?))
-  )
-)
-
 (defparameter *nodes* '((living-room (you are in the living room.
                            a wizard is snoring loudly on the couch))
                         (garden (you are in a beautiful garden. there is a well in front of you.))
@@ -24,4 +14,10 @@
                         (attic (living-room downstairs ladder))
                         )
 )
+
+(defun describe-path (edge)
+  `(there is a ,(caddr edge) going ,(cadr edge) from here.))
+
+(defun describe-paths (location edges)
+  (apply #'append (mapcar #'describe-path (cdr (assoc location edges)))))
 
