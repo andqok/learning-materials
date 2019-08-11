@@ -8,8 +8,25 @@
   </head>
   <body>
     <div class="wrapper">
-      <div class="stage">
-        <div class="Rectangle_1"></div>
+      <div class="stage perspective">
+        <div class="Rectangle_1 perspective" >
+          <div class="main-logo">
+            <svg viewBox="-10 -5 30 50" xmlns="http://www.w3.org/2000/svg">
+              <rect class="orange" x="0" y="0"   width="10" height="10" rx="1.5" ry="1.5" fill="#F9911E"></rect> <!-- orange -->
+              <rect class="violet" x="5" y="5"   width="10" height="10" rx="1.5" ry="1.5" fill="#CE379D"/> <!-- violet -->
+              <rect class="blue"   x="0" y="10"  width="10" height="10" rx="1.5" ry="1.5" fill="#3E9FFD"/> <!-- blue   -->
+              <rect class="green"  x="5" y="15"  width="10" height="10" rx="1.5" ry="1.5" fill="#4EBF49"/> <!-- green  -->
+            </svg>
+          </div>
+          <form id="login-form">
+            <h2 class="qcrm">QCRM</h2>
+            <p class="qcrm-by">by SupportYourApp</p>
+            <input type="text" class="credential-input" placeholder="Login">
+            <input type="text" class="credential-input" placeholder="Password">
+            <label for="remember-me"><input type="checkbox" id="remember-me">Remember me on this computer</label>
+            <button id="sign-in" type="submit" form="login-form" value="submit">Sign in to QCRM</button>
+          </form>
+        </div>
       </div>
     </div>
   </body>
