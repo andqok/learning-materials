@@ -12,12 +12,12 @@ input, button, submit {
 
 @font-face {
   font-family: 'Helvetica Neue Light';
-  src: url("fonts/HelveticaNeue-Light.woff") format("woff");
+  src: url("../fonts/HelveticaNeue-Light.woff") format("woff");
 }
 
 @font-face {
   font-family: 'Helvetica Neue Thin';
-  src: url("fonts/HelveticaNeue-Thin.woff") format("woff");
+  src: url("../fonts/HelveticaNeue-Thin.woff") format("woff");
 }
 
 html, body {
@@ -28,14 +28,14 @@ html, body {
 
 .wrapper {
   height: 100%;
-  background-image: url('img/bg1.jpg');
+  /* background-image: url('../img/bg1.jpg'); */
   background-size: cover;
 
   animation-name: fadeIn;
   animation-iteration-count: 1;
   animation-timing-function: ease-in-out;
   animation-duration: 1s;
-  animation-delay: .5s;
+  /* animation-delay: 1.5s; */
   animation-fill-mode: forwards;
 }
 
@@ -67,7 +67,7 @@ html, body {
   animation: swing-in-top-fwd 1s cubic-bezier(0.175, 0.885, 0.320, 1) both;
 
   padding: 3rem 2.8rem 3rem 3.2rem;
-  /* opacity: .8; */
+  box-shadow: 0px 3px 22px 0px rgba(0,0,0,0.75);
 }
 
 /* ----------------------------------------------
@@ -80,7 +80,7 @@ html, body {
  * animation swing-in-top-fwd
  * ----------------------------------------
  */
-/* @-webkit-keyframes swing-in-top-fwd {
+ @-webkit-keyframes swing-in-top-fwd {
   0% {
     -webkit-transform: rotateX(-100deg);
             transform: rotateX(-100deg);
@@ -95,29 +95,25 @@ html, body {
             transform-origin: top;
     opacity: 1;
   }
-} */
+}
 
 @keyframes swing-in-top-fwd {
   0% {
-    /* -webkit-transform: rotateX(-150deg); */
+    -webkit-transform: rotateX(-150deg);
             transform: rotateX(-150deg);
-    /* -webkit-transform-origin: top; */
+    -webkit-transform-origin: top;
             transform-origin: top;
-    opacity: 0;
   }
   100% {
-    /* -webkit-transform: rotateX(0deg); */
+    -webkit-transform: rotateX(0deg);
             transform: rotateX(0deg);
-    /* -webkit-transform-origin: top; */
+    -webkit-transform-origin: top;
             transform-origin: top;
-    /* opacity: .8; */
   }
 }
 
 .perspective {
-  /* -webkit-perspective: 500px; */
   perspective: 500px;
-  /* -webkit-perspective-origin: calc(50% + 120px) 50%; */
   perspective-origin: 50% 50%;
 }
 
@@ -129,7 +125,6 @@ html, body {
   height: 3.1rem;
   border-style: solid;
   background-color: rgb(255, 255, 255);
-  /* box-shadow: inset 0px 1px 1px 0px rgba(0, 0, 0, 0.39); */
   padding: .9rem;
 
   border-width: 1px;
