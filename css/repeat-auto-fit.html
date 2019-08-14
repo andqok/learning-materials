@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                margin: 0;
+            padding: 0;
+            }
+        html, body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr))
+        }
+        li {
+            display: flex;
+            flex-flow: column;
+        }
+        </style>
+    </head>
+    <body>
+        <ul>
+            <li style="background-color: chocolate">1</li>
+            <li style="background-color: rgb(30, 210, 30)">2</li>
+            <li style="background-color: rgb(50, 33, 148)">3</li>
+            <li style="background-color: rgb(210, 30, 30)">4</li>
+            <li style="background-color: rgb(168, 30, 210)">5</li>
+        </ul>
+    </body>
+</html>
