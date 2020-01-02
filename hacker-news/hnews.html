@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Hacker News</title>
+  <link rel="icon" href="./data/Img/hn.gif">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  html, body {
+    font-family: Arial;
+  }
+  .others {
+    font-family: Arial, Helvetica, sans-serif;
+    list-style-type: none;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding-inline-start: 20px;
+  }
+  .others li {
+    display: inline-block;
+    border-radius: 6px;
+  }
+  .others li:hover {
+    background-color: #0095ff73;
+  }
+  .others li a {
+    padding: 0 4px;
+    text-decoration: none;
+    color: black;
+    line-height: 27px;
+  }
+  .others li img {
+    width: 20px;
+    height: 20px;
+    transform: translateY(3px);
+  }
+  a {
+    text-decoration: none;
+  }
+  </style>
+</head>
+<body>
+  <ul class="others">
+    <li>
+      <a href="events.html">
+        <img src="./data/Img/time.png" alt="">
+        Events</a>
+    </li>
+    <li>
+      <a href="films.html">
+        <img src="./data/Img/film.png" alt="">
+        Films</a>
+    </li>
+    <li>
+      <a href="finance.html">
+        <img src="./data/Img/finance.png" alt="">
+        Finance</a></li>
+    <li>
+      <a href="games.html">
+        <img src="./data/Img/Play-Games-icon.png" alt="">
+        Games</a></li>
+    <li>
+      <a href="hnews.html">
+        <img src="./data/Img/hn.gif" alt="">
+        Hacker News</a></li>
+    <li>
+      <a href="music.html">
+        <img src="./data/Img/003302-pink-jelly-icon-media-music-eighth-note.ico" alt="">
+        Music</a></li>
+    <li>
+      <a href="podcasts.html">
+        <img src="./data/Img/podcast-2-512.png" alt="">
+        Podcasts</a></li>
+    <li>
+      <a href="reading.html">
+        <img src="./data/Img/Icon-Ecommerce-research.ico" alt="">
+        Reading</a></li>
+    <li>
+      <a href="sports.html">
+        <img src="./data/Img/running-woman-512.png" alt="">
+        Sports</a></li>
+    <li>
+      <a href="themes.html">
+        <img src="./data/Img/piechart.png" alt="">
+        Themes</a></li>
+  </ul>
+  <div id="calendar"></div>
+  <div id="vueapp">
+    <ol>
+      <li v-for="(articleObj, key) in stt" :key="key">
+        <a :href="articleObj.href">{{ articleObj.text }}</a>
+      </li>
+    </ol>
+  </div>
+  <!-- <script src="./data/code/vue.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"
+    integrity="sha256-chlNFSVx3TdcQ2Xlw7SvnbLAavAQLO0Y/LBiWX04viY=" crossorigin="anonymous"></script>
+
+  <script>
+
+  class LoopEnhancedObject extends Object {
+    setArrayItem(value) {
+      return {
+        toPath: (...path) => {
+          safelySetArrayItem(this, ...path, value)
+        },
+        toPaths: (pathArr) => {
+          for (let path of pathArr) {
+            safelySetArrayItem(this, ...path, value)
+          }
+        },
+      }
+      function safelySetArrayItem(tree, ...newBranches) {
+        const value = newBranches.pop()
+          , isObj = Object(tree) !== tree
+          , isUndef = typeof tree == 'undefined'
+          , isValidFunc = el => typeof el === 'string' || Number.isFinite(el)
+          , isEachValid = newBranches.every(isValidFunc)
+        if (isObj) { throw new Error('Tree is not an object.') }
+        if (isUndef) { throw new Error('Tree cannot be undefined or null.') }
+        if (!isEachValid) {
+          throw new Error('Not all branches are valid object properties.')
+        }
+        return innerSelf(tree, newBranches)
+
+        function innerSelf(tree, newBranches) {
+          const branch = newBranches.shift()
+          if (branch) {
+            if (!tree[ branch ]) tree[ branch ] = {}
+            if (Array.isArray(tree[ branch ])) {
+              tree[ branch ].push(value)
+              return tree
+            }
+            tree[ branch ] = innerSelf(tree[ branch ], newBranches)
+            return tree
+          } else {
+            return [ value ]
+          }
+        }
+      }
+    }
+    setArrayUniqueItem(value) {
+      return {
+        toPath: (...path) => {
+          setArrayUniqueItem(this, ...path, value)
+        },
+        toPaths: (pathArr) => {
+          for (let path of pathArr) {
+            setArrayUniqueItem(this, ...path, value)
+          }
+        },
+      }
+      function setArrayUniqueItem(tree, ...newBranches) {
+        if (Array.isArray(tree)) {
+          const arr = tree, valueArr = newBranches
+          for (const value of valueArr) {
+            if (!arr.includes(value)) {
+              arr.push(value)
+            }
+          }
+        } else {
+          var value = newBranches.pop()
+            , isObj = Object(tree) !== tree
+            , isUndef = typeof tree == 'undefined'
+            , isValidFunc = el => typeof el === 'string' || Number.isFinite(el)
+            , isEachValid = newBranches.every(isValidFunc)
+          if (isObj) { throw new Error('Tree is not an object.') }
+          if (isUndef) { throw new Error('Tree cannot be undefined or null.') }
+          if (!isEachValid) {
+            throw new Error('Not all branches are valid object properties.')
+          }
+          return innerSelf(tree, newBranches)
+        }
+        function innerSelf(tree, newBranches) {
+          const branch = newBranches.shift()
+          if (branch) {
+            if (!tree[ branch ]) tree[ branch ] = {}
+            if (Array.isArray(tree[ branch ])) {
+              if (!tree[ branch ].includes(value)) tree[ branch ].push(value)
+              return tree
+            }
+            tree[ branch ] = innerSelf(tree[ branch ], newBranches)
+            return tree
+          } else {
+            return [ value ]
+          }
+        }
+      }
+    }
+    setNumber(value) {
+      return {
+        toPath: (...path) => {
+          setNumber(this, ...path, value)
+        },
+        toPaths: (pathArr) => {
+          for (let path of pathArr) {
+            setNumber(this, ...path, value)
+          }
+        },
+      }
+      function setNumber(tree, ...branches) {
+        const num = branches.pop()
+
+        return innerSelf(tree, ...branches)
+
+        function innerSelf(tree, ...branches) {
+          const branch = branches.shift()
+          if (branch) {
+            const currentValue = tree[ branch ]
+              , isObj = Object(currentValue) === currentValue
+              , isNum = typeof currentValue === 'number'
+              , isUndef = typeof currentValue === 'undefined'
+            if (isObj) tree[ branch ] = innerSelf(tree[ branch ], ...branches)
+            if (isNum) tree[ branch ] = currentValue + num
+            if (isUndef) tree[ branch ] = innerSelf({}, ...branches)
+            return tree
+          } else {
+            return num
+          }
+        }
+      }
+    }
+    setValue(value) {
+      return {
+        toPath: (...path) => {
+          setObject(this, ...path)
+        },
+        toPaths: (pathArr) => {
+          for (let path of pathArr) {
+            setObject(this, ...path)
+          }
+        },
+      }
+      function setObject(tree, ...newBranches) {
+        if (typeof tree == 'undefined') {
+          throw new Error('Tree cannot be undefined or null.')
+        }
+        if (Object(tree) !== tree) {
+          throw new Error('Tree is not an object.')
+        }
+        const isEachValid = newBranches.every(el => {
+          return typeof el === 'string' || Number.isFinite(el)
+        })
+        if (!isEachValid) {
+          throw new Error('Not all branches are valid object properties.')
+        }
+        innerSelf(tree, newBranches)
+        return tree
+
+        function innerSelf(tree, newBranches) {
+          const branch = newBranches.shift()
+          if (branch) {
+            if (!tree[ branch ]) {
+              if (newBranches.length) {
+                tree[ branch ] = {}
+              } else {
+                tree[ branch ] = value
+              }
+            }
+            innerSelf(tree[ branch ], newBranches)
+          }
+          else {
+            return true
+          }
+        }
+      }
+    }
+  }
+
+data['web : tech'] = `
+2019-01-01
+https://news.ycombinator.com/item?id=18796775 Let's Encrypt: Looking Forward to 2019
+
+2019-01-02
+https://news.ycombinator.com/item?id=18804875 How to Use JSON Web Tokens
+
+2019-01-03
+https://news.ycombinator.com/item?id=18819353 Show HN: Jetpack – Webpack made more convenient
+https://news.ycombinator.com/item?id=18814416 Show HN: Learn and practice modern JavaScript
+
+2019-01-04
+https://news.ycombinator.com/item?id=18824968 Show HN: An experimental data-flow analysis tool for JavaScript
+https://news.ycombinator.com/item?id=18822577 Big ol’ ball o’ JavaScript
+
+2019-01-05
+https://news.ycombinator.com/item?id=18831909 Is there hope for IPv6?
+https://news.ycombinator.com/item?id=18832155 9999999999999999.0 – 9999999999999998.0
+https://news.ycombinator.com/item?id=18829557 Ask HN: Go-to web stack today?
+https://news.ycombinator.com/item?id=18832119 Show HN: An isomorphic, configurable JavaScript utility for object deep cloning
+
+2019-01-06
+https://news.ycombinator.com/item?id=18836189 Tree Style Tabs
+https://news.ycombinator.com/item?id=18839960 ES6 Classes
+
+2019-01-07
+https://news.ycombinator.com/item?id=18846830 The melting pot of JavaScript (2017)
+https://news.ycombinator.com/item?id=18846404 Comparing Rust and JavaScript Ergonomics with a Simple Linked List
+
+2019-01-08
+https://news.ycombinator.com/item?id=18843518 Ask HN: Is web development still a viable career choice?
+
+2019-01-09
+---
+
+2019-01-10
+https://news.ycombinator.com/item?id=18874028 Roadmap to becoming a web developer in 2019
+
+2019-01-11
+---
+
+2019-01-12
+https://news.ycombinator.com/item?id=18891329 Removing JavaScript's 'this' keyword makes it a better language
+https://news.ycombinator.com/item?id=18890893 Say no to Venn diagrams when explaining SQL joins (2016)
+https://news.ycombinator.com/item?id=18892898 RunJS
+
+2019-01-13
+https://news.ycombinator.com/item?id=18894792 GoDaddy injecting JavaScript into websites and how to stop it
+https://news.ycombinator.com/item?id=18893808 Ask HN: Is it just me or is the AMP project making everything slower?
+https://news.ycombinator.com/item?id=18887273 Airbnb Is Moving Faster at Scale with GraphQL and Apollo
+https://news.ycombinator.com/item?id=18896957 Defensive JavaScript
+
+2019-01-14
+https://news.ycombinator.com/item?id=18906405 Porting 30K lines of code from Flow to TypeScript
+
+2019-01-15
+https://news.ycombinator.com/item?id=18910334 Deep packet inspection is dead, and here's why (2017)
+
+2019-01-16
+https://news.ycombinator.com/item?id=18919599 How to teach Git
+https://news.ycombinator.com/item?id=18918038 Migrate Jest to TypeScript
+https://news.ycombinator.com/item?id=18919187 Show HN: Shiny.js simulates reflections on the web for mobile devices
+https://news.ycombinator.com/item?id=18919231 99% code coverage (2017)
+
+2019-01-17
+https://news.ycombinator.com/item?id=18932320 HeidiSQL – GUI client for MariaDB, MySQL, Microsoft SQL Server and PostgreSQL
+https://news.ycombinator.com/item?id=18925190 My PHP Development Setup
+https://news.ycombinator.com/item?id=18929742 Show HN: Json2graphql – From a JSON file to Postgres-backed realtime GraphQL
+
+2019-01-18
+https://news.ycombinator.com/item?id=18942260 Future of TypeScript on ESLint
+https://news.ycombinator.com/item?id=18937464 Animating CSS Grid
+https://news.ycombinator.com/item?id=18939145 Show HN: HTML5 Video Player in TypeScript
+
+2019-01-19
+https://news.ycombinator.com/item?id=18945658 Ask HN: Is there any money in website design for small businesses anymore?
+
+2019-01-20
+https://news.ycombinator.com/item?id=18948755 Front End Development Topics to Learn in 2019
+https://news.ycombinator.com/item?id=18953040 RE:DOM – Tiny turboboosted JavaScript library for creating user interfaces
+https://news.ycombinator.com/item?id=18951008 Ask HN: Why does front-end development change so often?
+
+2019-01-21
+https://news.ycombinator.com/item?id=18961793 Ask HN: What are must-know concepts for back end development?
+https://news.ycombinator.com/item?id=18957421 JavaScript iterator patterns
+https://news.ycombinator.com/item?id=18960010 Meta Programming in JavaScript with Proxies
+
+2019-01-22
+https://news.ycombinator.com/item?id=18972242 Why We Chose Rails to Build Gitlab
+https://news.ycombinator.com/item?id=18971897 What's New in JavaScript for 2019
+
+2019-01-23
+https://news.ycombinator.com/item?id=18969160 An Open Source UI Builder for React
+https://news.ycombinator.com/item?id=18966514 The great divide
+
+2019-01-24
+https://news.ycombinator.com/item?id=18991149 How OneGraph onboards users who are new to GraphQL
+
+2019-01-25
+https://news.ycombinator.com/item?id=18995212 The “Bug-O” Notation
+https://news.ycombinator.com/item?id=19000419 Show HN: Make external SVG files styleable with CSS through injection
+
+2019-01-26
+https://news.ycombinator.com/item?id=19006036 Fossil vs Git
+https://news.ycombinator.com/item?id=19000109 Websocketd
+
+2019-01-27
+https://news.ycombinator.com/item?id=19012705 HTTP/3: from root to tip
+https://news.ycombinator.com/item?id=19012048 Show HN: Solve and generate mazes with JavaScript on HTML Canvas
+https://news.ycombinator.com/item?id=19011650 Future JavaScript: what is still missing?
+
+2019-01-28
+https://news.ycombinator.com/item?id=19017270 Show HN: X-spreadsheet – A JavaScript canvas spreadsheet for web
+https://news.ycombinator.com/item?id=19021719 Ask HN: Is it just me, or is CSS too damn hard?
+https://news.ycombinator.com/item?id=19014962 When FP? And When OOP? (2013)
+
+2019-01-29
+https://news.ycombinator.com/item?id=19023413 Analyzing the Performance of WebAssembly vs. Native Code
+https://news.ycombinator.com/item?id=19026396 Firefox 65.0 released
+
+2019-01-30
+https://news.ycombinator.com/item?id=19038327 Why isn't the internet more fun and weird?
+https://news.ycombinator.com/item?id=19020019 REST and GraphQL really aren't that different
+
+2019-01-31
+https://news.ycombinator.com/item?id=19048126 Write tests. Not too many. Mostly integration (2017)
+https://news.ycombinator.com/item?id=19034244 Everything You Need to Know About SVG
+
+2019-02-01
+https://news.ycombinator.com/item?id=19054150 My First Year as a Solo Developer
+https://news.ycombinator.com/item?id=19055165 Ask HN: Freelancer? Seeking Freelancer? (February 2019)
+
+2019-02-02
+https://news.ycombinator.com/item?id=19057673 Google Play Store Now Open for Progressive Web Apps
+
+2019-02-03
+https://news.ycombinator.com/item?id=19067302 React as a UI Runtime
+https://news.ycombinator.com/item?id=19061491 Tiny PWAs and why I keep building them
+https://news.ycombinator.com/item?id=19069365 Why Captchas have gotten so difficult
+https://news.ycombinator.com/item?id=19062261 Limiting JavaScript?
+https://news.ycombinator.com/item?id=19069320 Ask HN: Are side-projects still a good way to generate passive income?
+
+2019-02-04
+https://news.ycombinator.com/item?id=19076360 Stylelint – A modern linter for CSS
+https://news.ycombinator.com/item?id=19073851 Making SetInterval Declarative with React Hooks
+https://news.ycombinator.com/item?id=19075766 Public APIs: A collective list of free APIs
+
+2019-02-05
+https://news.ycombinator.com/item?id=19085534 HTTP/3 explained
+https://news.ycombinator.com/item?id=19082432 Git reset vs. Git revert
+
+2019-02-06
+https://news.ycombinator.com/item?id=19098246 Move Fast and Migrate Things: How We Automated Migrations in Postgres
+https://news.ycombinator.com/item?id=19100257 Show HN: Simple way to share state using React Hooks and Context
+https://news.ycombinator.com/item?id=19093555 With React 16.8, React Hooks are available in a stable release
+
+2019-02-07
+https://news.ycombinator.com/item?id=19106922 HTML, CSS and our vanishing industry entry points
+https://news.ycombinator.com/item?id=19096844 CodeFlow: Improving the Code Review Process at Microsoft (2018)
+
+2019-02-08
+https://news.ycombinator.com/item?id=19114037 Ask HN: What are some great personal blogs/portfolios?
+
+2019-02-09
+https://news.ycombinator.com/item?id=19122727 Show HN: Make your site’s pages instant in one minute
+
+2019-02-10
+https://news.ycombinator.com/item?id=19128981 What Hooks Mean for Vue
+
+2019-02-11
+https://news.ycombinator.com/item?id=19133026 The Psychological Trap of Freelancing
+https://news.ycombinator.com/item?id=19131272 38% of bugs at Airbnb could have been prevented by using types
+https://news.ycombinator.com/item?id=19133015 Next.js 8 released
+https://news.ycombinator.com/item?id=19133953 Tasks That Can Be Done with Pure HTML and CSS
+https://news.ycombinator.com/item?id=19134260 None of my projects want to be SPAs
+https://news.ycombinator.com/item?id=19133864 Ask HN: How bad is freelancing?
+https://news.ycombinator.com/item?id=19136726 If It Ain't TypeScript It Ain't Sexy
+
+2019-02-12
+https://news.ycombinator.com/item?id=19147466 Bootstrap 5 will remove jQuery as a dependency
+https://news.ycombinator.com/item?id=19145156 The memory safety problem isn't bad coders
+https://news.ycombinator.com/item?id=19142717 Converting objects to hash signatures in JavaScript
+
+2019-02-13
+https://news.ycombinator.com/item?id=19149690 Show HN: DeskGap – Like Electron, but uses the system webview
+https://news.ycombinator.com/item?id=19141895 Create Desktop Apps with HTML5 and Go
+https://news.ycombinator.com/item?id=19149792 SQL: One of the most valuable skills
+https://news.ycombinator.com/item?id=19156671 Handling 1M websocket connections in Go
+
+2019-02-14
+https://news.ycombinator.com/item?id=19162011 Micro HTML and CSS Only Framework for Slides/Presentations
+https://news.ycombinator.com/item?id=19161489 Ask HN: How do I earn more as a developer?
+
+2019-02-15
+https://news.ycombinator.com/item?id=19171402 Don’t Get Clever with Login Forms
+https://news.ycombinator.com/item?id=19166233 Replacing JavaScript Hot Path with WebAssembly
+https://news.ycombinator.com/item?id=19168442 Chrome will Soon Let You Share Links to a Specific Word or Sentence on a Page
+
+2019-02-16
+---
+
+2019-02-17
+https://news.ycombinator.com/item?id=19181931 Going Solo, Successfully
+https://news.ycombinator.com/item?id=19184496 You probably don't need a single-page app
+
+2019-02-18
+https://news.ycombinator.com/item?id=19190641 Why I Write CSS in JavaScript
+https://news.ycombinator.com/item?id=19192737 The Principal Developer
+
+2019-02-19
+https://news.ycombinator.com/item?id=19189455 Show HN: Inlets – Expose your local endpoints to the Internet
+https://news.ycombinator.com/item?id=19195148 A Newly-Generated Create-React-App 2.1.5 App Has 1,568 Dependencies
+https://news.ycombinator.com/item?id=19195720 Why I Prefer Dynamic Typing Over Static Typing (2017)
+
+2019-02-20
+https://news.ycombinator.com/item?id=19198462 Canvas fingerprinting on the web
+https://news.ycombinator.com/item?id=19204186 Autocomplete Using Markov Chains
+https://news.ycombinator.com/item?id=19205657 I love React Hooks
+
+2019-02-21
+https://news.ycombinator.com/item?id=19216428 Show HN: ICONSVG – Customize and Generate Common SVG Icons
+
+2019-02-22
+https://news.ycombinator.com/item?id=19224141 Show HN: Material Kit – Open Source UI for Bootstrap, React, Vuejs, React Native
+https://news.ycombinator.com/item?id=19223853 Firefox to Block All 3rd Party Trackers by Default
+https://news.ycombinator.com/item?id=19226262 Why I prefer objects over switch statements
+
+2019-02-23
+https://news.ycombinator.com/item?id=19233637 Cleave.js – Format input text content when you are typing
+
+2019-02-24
+https://news.ycombinator.com/item?id=19238340 CSS-Powered 3D Engine (2014)
+
+2019-02-25
+https://news.ycombinator.com/item?id=19248104 MySQL Challenge: 100k Connections
+https://news.ycombinator.com/item?id=19241096 Alternatives to JSX
+
+2019-02-26
+https://news.ycombinator.com/item?id=19254828 Show HN: Zero – A fast, zero-configuration server for React, Node.js, Markdown
+
+2019-02-27
+https://news.ycombinator.com/item?id=19264154 Gpu.js – GPU Accelerated JavaScript
+https://news.ycombinator.com/item?id=19263649 We Need Chrome No More
+
+2019-02-28
+https://news.ycombinator.com/item?id=19270646 Mozilla releases the largest to-date public domain transcribed voice dataset
+https://news.ycombinator.com/item?id=19254008 Ask HN: How to be productive with big existing code base
+https://news.ycombinator.com/item?id=19271135 The hard part in becoming a command line wizard
+https://news.ycombinator.com/item?id=19270527 How I'm still not using GUIs in 2019: A guide to the terminal
+https://news.ycombinator.com/item?id=19269517 GrapesJS – Free and Open Source Web Builder Framework
+
+2019-03-01
+https://news.ycombinator.com/item?id=19277809 JSON with Sqlite
+https://news.ycombinator.com/item?id=19277263 Bash Completion from JSON Fields
+
+2019-03-02
+https://news.ycombinator.com/item?id=19289782 EditorConfig: Consistent coding styles across various editors and IDEs
+https://news.ycombinator.com/item?id=19289865 Install NPM dependencies that run in browser without Browserify, Webpack
+https://news.ycombinator.com/item?id=19286885 Database schema changes are hard (2017)
+
+2019-03-03
+https://news.ycombinator.com/item?id=19295836 Sourcebuster.js
+https://news.ycombinator.com/item?id=19304802 Firefox Experiments I Would Have Liked to Try
+
+2019-03-04
+https://news.ycombinator.com/item?id=19301159 W3C approves WebAuthn as the web standard for password-free logins
+
+2019-03-05
+https://news.ycombinator.com/item?id=19321775 Serious Chrome zero-day
+
+2019-03-06
+---
+
+2019-03-07
+https://news.ycombinator.com/item?id=19332156 Stop Wasting Connections, Use HTTP Keep-Alive
+https://news.ycombinator.com/item?id=19330024 Scheduling in React
+
+2019-03-08
+---
+
+2019-03-09
+---
+
+2019-03-10
+---
+
+2019-03-11
+https://news.ycombinator.com/item?id=19362297 Major bank accidentally published a private package to the public NPM Registry
+https://news.ycombinator.com/item?id=19356293 How the Internet Travels Across Oceans
+https://news.ycombinator.com/item?id=19356806 A guide to useEffect in React
+
+2019-03-12
+https://news.ycombinator.com/item?id=19367850 Firefox Send: Free encrypted file transfer service
+https://news.ycombinator.com/item?id=19363838 Tim Berners-Lee: 'Stop web's downward plunge to dysfunctional future'
+https://news.ycombinator.com/item?id=19363595 Show HN: Mixing WebGL and HTML, Both Rendered Out in React
+https://news.ycombinator.com/item?id=19366524 Microsoft proves the critics right: We’re heading toward a Chrome-only Web
+
+2019-03-13
+https://news.ycombinator.com/item?id=19377492 JIT-Less V8
+https://news.ycombinator.com/item?id=19376323 Why is no one signing their emails?
+https://news.ycombinator.com/item?id=19367149 A JavaScript-Free Front End
+https://news.ycombinator.com/item?id=19376891 New in Chrome 73
+
+2019-03-14
+---
+
+2019-03-15
+---
+
+2019-03-16
+https://news.ycombinator.com/item?id=19408735 Ask HN: Is jQuery on its way out?
+
+2019-03-17
+---
+
+2019-03-18
+https://news.ycombinator.com/item?id=19425589 How we do Vue: one year later (2017)
+https://news.ycombinator.com/item?id=19423036 Simple script to analyse your PostgreSQL database config, give tuning advice
+https://news.ycombinator.com/item?id=19423228 	Ask HN: How to learn best practices when you have no one to teach you?
+
+2019-03-19
+https://news.ycombinator.com/item?id=19430684 Firefox 66.0 Aims to Reduce Online Annoyances
+https://news.ycombinator.com/item?id=19429630 Vertically Scaling PostgreSQL
+https://news.ycombinator.com/item?id=19433344 Pika/web: Web Apps Without the Bundler
+https://news.ycombinator.com/item?id=19423539 Azure Data Studio: An Open-Source GUI Editor for Postgres
+https://news.ycombinator.com/item?id=19428796 A Homepage for the JavaScript Specification
+https://news.ycombinator.com/item?id=19428048 Why I believe Rails is still relevant in 2019
+
+2019-03-20
+https://news.ycombinator.com/item?id=19438826 Rules for Autocomplete
+https://news.ycombinator.com/item?id=19443325 Using Go Modules
+
+2019-03-21
+https://news.ycombinator.com/item?id=19455441 Show HN: A Color Picker I Made
+https://news.ycombinator.com/item?id=19457324 Repl.it GFX: Native graphics development in the browser
+https://news.ycombinator.com/item?id=19447059 Preload, prefetch and other link tags
+https://news.ycombinator.com/item?id=19449279 React Router v5
+https://news.ycombinator.com/item?id=19451552 In Defense of YAML
+
+2019-03-22
+https://news.ycombinator.com/item?id=19463306 Redis streams as a pure data structure
+https://news.ycombinator.com/item?id=19451352 80% of the Web Powered by PHP (2017)
+https://news.ycombinator.com/item?id=19463989 Ask HN: What happened to server-side rendering?
+
+2019-03-23
+---
+
+2019-03-24
+https://news.ycombinator.com/item?id=19477336 A guide to threads in Node.js
+https://news.ycombinator.com/item?id=19461777 Why We Love QUIC and HTTP/3
+https://news.ycombinator.com/item?id=19475218 On Learning Rust and Go: Migrating Away from Python
+
+2019-03-25
+https://news.ycombinator.com/item?id=19479464 You probably don’t need input type=“number”
+
+2019-03-26
+---
+
+2019-03-27
+https://news.ycombinator.com/item?id=19500640 Storing UTC is not a silver bullet
+
+2019-03-28
+https://news.ycombinator.com/item?id=19517560 I Miss Rails
+https://news.ycombinator.com/item?id=19515226 Go 2018 Survey Results
+
+2019-03-29
+---
+
+2019-03-30
+https://news.ycombinator.com/item?id=19522053 Everything I know about freelancing
+
+2019-03-31
+https://news.ycombinator.com/item?id=19532090 Timestamps and Time Zones in PostgreSQL (2016)
+https://news.ycombinator.com/item?id=19534060 Native Javascript alternatives to jQuery methods
+
+2019-04-01
+https://news.ycombinator.com/item?id=19544920 Ask HN: Is all programming constantly changing or just front-end JavaScript?
+
+2019-04-02
+---
+
+2019-04-03
+https://news.ycombinator.com/item?id=19558030 Who has the fastest website in F1?
+https://news.ycombinator.com/item?id=19562650 Why there’s so little left of the early internet
+https://news.ycombinator.com/item?id=19558980 You probably don't need that hip web framework
+
+2019-04-04
+https://news.ycombinator.com/item?id=19560938 Jerks on the Internet: what my first DDoS taught me
+https://news.ycombinator.com/item?id=19570444 Unreasonable Effectiveness of SQL
+https://news.ycombinator.com/item?id=19571399 PostgreSQL Performance on Raspberry Pi
+
+2019-04-05
+https://news.ycombinator.com/item?id=19577832 Inverse Live Coding: A practice for learning web development
+https://news.ycombinator.com/item?id=19578351 Self-Contained Pure-Go Web Server with Lua, MD, HTTP/2, QUIC, Redis Support
+
+2019-04-06
+https://news.ycombinator.com/item?id=19587782 Error Handling in Go (2016)
+https://news.ycombinator.com/item?id=19588961 SQL databases come up with algorithms you’d never have dreamed of (2017) [video]
+https://news.ycombinator.com/item?id=19589614 Lessons learned porting 50k loc from Java to Go
+
+2019-04-07
+https://news.ycombinator.com/item?id=19600440 Programming: Doing it more vs. doing it better
+https://news.ycombinator.com/item?id=19597359 When to Use TypeScript – A Detailed Guide Through Common Scenarios
+https://news.ycombinator.com/item?id=19593866 Show HN: Water.css – A just-add-css collection of styles to make websites nicer
+https://news.ycombinator.com/item?id=19596458 Native image lazy-loading for the web
+
+2019-04-08
+https://news.ycombinator.com/item?id=19604135 It seems that Google is forgetting the old web
+https://news.ycombinator.com/item?id=19601798 Show HN: Gfile, a WebRTC based file transfer utility in Go
+https://news.ycombinator.com/item?id=19601347 Ask HN: Why doesn't a time travel debugger exist yet for JavaScript?
+https://news.ycombinator.com/item?id=19605413 Bleve: Full-text search and indexing for Go
+https://news.ycombinator.com/item?id=19601503 VPN – Very Precarious Narrative
+https://news.ycombinator.com/item?id=19607169 58 Bytes of CSS to look great nearly everywhere
+
+2019-04-09
+https://news.ycombinator.com/item?id=19614808 Protections Against Fingerprinting and Crypto Mining in Firefox Nightly and Beta
+https://news.ycombinator.com/item?id=19615546 Netlify Dev
+https://news.ycombinator.com/item?id=19615895 Show HN: A minimalist blog based on Tufte CSS
+https://news.ycombinator.com/item?id=19612633 Google features that Microsoft turned off in Chromium Edge
+
+2019-04-10
+---
+
+2019-04-11
+https://news.ycombinator.com/item?id=19629614 Google AMP lowered our page speed, and there's no choice but to use it
+https://news.ycombinator.com/item?id=19638701 Show HN: EdgeDB – Next generation database
+https://news.ycombinator.com/item?id=19628789 JQuery 3.4.0 Released
+https://news.ycombinator.com/item?id=19633579 Don’t trust the locals: investigating prevalence of persistent client-side XSS
+https://news.ycombinator.com/item?id=19634265 Ice cold archive storage
+https://news.ycombinator.com/item?id=19632817 Building a front end with no JavaScript
+
+2019-04-12
+https://news.ycombinator.com/item?id=19640226 Web Components could replace frontend frameworks?
+https://news.ycombinator.com/item?id=19632263 Google makes BigQuery available in Sheets
+https://news.ycombinator.com/item?id=19649291 The case for rejecting the memristor as a fundamental circuit element (2018)
+https://news.ycombinator.com/item?id=19642722 Great developers are raised, not hired
+https://news.ycombinator.com/item?id=19642199 Removing Array Duplicates
+https://news.ycombinator.com/item?id=19642975 Your terminal is not a terminal: An Introduction to Streams
+https://news.ycombinator.com/item?id=19632361 The Nature of Code – evolutionary and emergent properties of nature in code
+
+2019-04-13
+https://news.ycombinator.com/item?id=19642190 Learn more programming languages, even if you won't use them
+https://news.ycombinator.com/item?id=19653875 Web Developer's Guide to DNS
+https://news.ycombinator.com/item?id=19650109 VSCodium – An Open Source Visual Studio Code Without Trackers
+https://news.ycombinator.com/item?id=19653834 JSON as configuration files: please don’t (2016)
+https://news.ycombinator.com/item?id=19633588 The History of Text Generation
+https://news.ycombinator.com/item?id=19651245 Why I Switched from Visual Studio Code to JetBrains WebStorm
+https://news.ycombinator.com/item?id=19650491 Firefox banning noisy video from autoplaying
+https://news.ycombinator.com/item?id=19642113 Master of web puppets: abusing web browsers for persistent and stealthy
+https://news.ycombinator.com/item?id=19632372 Ask HN: Do you know of any good product taking advantage of NLP?
+
+2019-04-14
+https://news.ycombinator.com/item?id=19660690 Using JSON Schema to Document, Test, and Debug APIs
+https://news.ycombinator.com/item?id=19657087 Not enough jobs for science graduates challenges STEM hype
+https://news.ycombinator.com/item?id=19656183 Configuring and hardening Firefox privacy, security and anti-fingerprinting
+https://news.ycombinator.com/item?id=19656666 Languages I want to write
+
+2019-04-15
+https://news.ycombinator.com/item?id=19662501 Improving Key Expiration in Redis
+https://news.ycombinator.com/item?id=19664123 The Difference Between SQL’s JOIN .. ON Clause and the Where Clause
+https://news.ycombinator.com/item?id=19664509 Responsible JavaScript: Part I
+
+2019-04-16
+https://news.ycombinator.com/item?id=19677721 Pyodide: Bringing the scientific Python stack to the browser
+https://news.ycombinator.com/item?id=19671673 Why software projects take longer than you think – a statistical model
+https://news.ycombinator.com/item?id=19669789 Ripgrep 11 Released
+https://news.ycombinator.com/item?id=19677292 Land of Lisp (2010)
+https://news.ycombinator.com/item?id=19670046 Show HN: Sortraits, Portraits of Sorting Algorithms
+https://news.ycombinator.com/item?id=19663305 Toolbox or library for simulating classical mechanics problems?
+
+2019-04-17
+https://news.ycombinator.com/item?id=19679890 Animating URLs with JavaScript and Emojis
+https://news.ycombinator.com/item?id=19677850 Panic’s Next Editor
+https://news.ycombinator.com/item?id=19678914 AMP pages displaying your own domain
+https://news.ycombinator.com/item?id=19678693 Announcing AMP Real URL
+
+2019-04-18
+https://news.ycombinator.com/item?id=19689554 Xubuntu 19.04: The Exhaustive Update
+
+2019-04-19
+https://news.ycombinator.com/item?id=19700784 Search Benchmarking: RediSearch vs. Elasticsearch
+
+2019-04-20
+https://news.ycombinator.com/item?id=19701783 Ask HN: One-person SaaS apps that are profitable?
+https://news.ycombinator.com/item?id=19707543 We Don't Have a Talent Shortage. We Have a Sucker Shortage
+https://news.ycombinator.com/item?id=19704486 Commit messages guide
+https://news.ycombinator.com/item?id=19704792 Python overtakes JavaScript as most questioned language on StackOverflow
+https://news.ycombinator.com/item?id=19698827 Storing files in the DB: story of an epic failure
+https://news.ycombinator.com/item?id=19704179 Mozilla Firefox to Enable Hyperlink Ping Tracking by Default
+
+2019-04-21
+https://news.ycombinator.com/item?id=19713604 The Web is missing an essential part of infrastructure: an open web index
+https://news.ycombinator.com/item?id=19714627 Elixir, Phoenix, Absinthe, GraphQL, React, and Apollo
+https://news.ycombinator.com/item?id=19710778 The Value of Bitemporality – Whose Time Is It Anyway?
+
+2019-04-22
+https://news.ycombinator.com/item?id=19717786 PySnooper: Never use print for debugging again
+https://news.ycombinator.com/item?id=19715191 Why OO Sucks by Joe Armstrong (2000)
+https://news.ycombinator.com/item?id=19716019 Manim – 3Blue1Brown's animation engine for explanatory math videos
+https://news.ycombinator.com/item?id=19716179 Mozilla announces WebAssembly System Interface, what JVM should have been
+https://news.ycombinator.com/item?id=19716936 JavaScript debuggers are broken
+
+2019-04-23
+https://news.ycombinator.com/item?id=19715490 The Rise and Fall of Internet Art Communities
+https://news.ycombinator.com/item?id=19727551 Why did Clojure gain so much popularity?
+
+2019-04-24
+https://news.ycombinator.com/item?id=19730663 How to Ace the Google Interview: Ultimate Guide
+https://news.ycombinator.com/item?id=19742328 The Brave Browser Will Pay You to Surf the Web
+https://news.ycombinator.com/item?id=19737663 James Webb Telescope will run a proprietary JS interpreter by a bankrupt company
+
+2019-04-25
+https://news.ycombinator.com/item?id=19749767 MuseNet
+https://news.ycombinator.com/item?id=19744513 Immediate Mode GUI
+https://news.ycombinator.com/item?id=19741408 Ask HN: How to Teach Coding?
+
+2019-04-26
+https://news.ycombinator.com/item?id=19753282 Stepping Away from Sass
+https://news.ycombinator.com/item?id=19759101 Technical Challenges Developing a Distributed SQL Database
+https://news.ycombinator.com/item?id=19758848 Base Web, Uber’s New Design System for Building Websites in React
+https://news.ycombinator.com/item?id=19746122 Lisp Operating System (2015)
+
+2019-04-27
+https://news.ycombinator.com/item?id=19765761 PostgreSQL Features to Try
+https://news.ycombinator.com/item?id=19767428 Ask HN: Sources of remote dev work with minimal human interaction?
+
+2019-04-28
+https://news.ycombinator.com/item?id=19772322 Darling – macOS Translation Layer for Linux
+https://news.ycombinator.com/item?id=19763562 Why Good Developers Are Promoted into Unhappiness (2007)
+
+2019-04-29
+https://news.ycombinator.com/item?id=19781549 WeWork Files for IPO
+https://news.ycombinator.com/item?id=19778097 Go 1.13: xerrors
+
+2019-04-30
+https://news.ycombinator.com/item?id=19784907 Have a personal web site
+https://news.ycombinator.com/item?id=19789361 Soul – A language and IDE for audio coding
+
+2019-05-01
+https://news.ycombinator.com/item?id=19794558 Intermediate Vim
+
+2019-05-02
+https://news.ycombinator.com/item?id=19798678 A Conspiracy to Kill IE6
+https://news.ycombinator.com/item?id=19805053 Ligatures in Programming Fonts: Hell No
+https://news.ycombinator.com/item?id=19811063 We can't judge another programmer's abilities in a 60 minute interview
+
+2019-11-01
+https://news.ycombinator.com/item?id=21421195 Encrypted web traffic now exceeds 90%
+https://news.ycombinator.com/item?id=21414882 Htop Explained
+https://news.ycombinator.com/item?id=21417381 Firefox to Discontinue Sideloaded Extensions
+https://news.ycombinator.com/item?id=21418033 Linus Torvalds: Git proved I could be more than a one-hit wonder
+https://news.ycombinator.com/item?id=21417965 Show HN: Turn any website into an API (for those who miss Kimono)
+https://news.ycombinator.com/item?id=21416614 Lack of cdnjs activity
+https://news.ycombinator.com/item?id=21417026 Remember QR Codes? They’re More Powerful Than You Think
+https://news.ycombinator.com/item?id=21416338 Show HN: Simple command line note taking tool
+
+2019-11-02
+https://news.ycombinator.com/item?id=21427217 Google are removing URLs entirely from search results?
+https://news.ycombinator.com/item?id=21429259 Ask HN: Shouldn't web browsers ask us before storing cookies?
+
+2019-11-03
+https://news.ycombinator.com/item?id=21435195 PostgREST
+https://news.ycombinator.com/item?id=21436414 Audio Fingerprinting using the AudioContext API
+https://news.ycombinator.com/item?id=21430745 The Misunderstood Roots of FRP
+https://news.ycombinator.com/item?id=21426056 SingleFileZ, a web extension for saving pages as HTML/ZIP hybrid files
+https://news.ycombinator.com/item?id=21431222 A CS degree is better than teaching yourself how to code?
+https://news.ycombinator.com/item?id=21433305 Ask HN: How prevalent is non-cookie-based web tracking today?
+
+2019-11-04
+https://news.ycombinator.com/item?id=21440508 Pure CSS – Lace
+https://news.ycombinator.com/item?id=21442330 Laws, theories, principles and patterns that developers might find useful
+
+2019-11-05
+https://news.ycombinator.com/item?id=21448983 In the 17th Century, Leibniz Dreamed of a Machine That Could Calculate Ideas
+https://news.ycombinator.com/item?id=21452830 JavaScript Errors: An Exceptional History
+
+2019-11-06
+https://news.ycombinator.com/item?id=21456817 TypeScript 3.7
+https://news.ycombinator.com/item?id=21461617 Ask HN: How do you make sure your servers are up as a single founder?
+https://news.ycombinator.com/item?id=21460966 Designing better data tables (2017)
+https://news.ycombinator.com/item?id=21458977 Typora: A truly minimal markdown editor
+https://news.ycombinator.com/item?id=21461145 Is GraphQL Still Relevant in an HTTP2 World?
+
+2019-11-07
+https://news.ycombinator.com/item?id=21473759 Ask HN: Is web dev viable today?
+
+
+
+
+
+
+`
+  const stt = []
+  const lines = data[ 'web : tech' ].split('\n')
+  const lines2 = lines
+    .map(i => i.length ? i : '~~~~~~~~')
+    .join('\n')
+    .split('~~~~~~~~')
+    .filter(p => p !== '\n' && p !== '')
+    .map(b => b.slice(1, -1))
+    .map(v => v.split('\n'))
+    .reduce((acc, dayRecord) => {
+      const date = dayRecord[0]
+      const isNoRecords = dayRecord[1] === '---'
+      acc[date] = {}
+      if (!isNoRecords) {
+        dayRecord.slice(1).forEach(article => {
+          const articleMatched = article.match(/\S+/g)
+          const number = articleMatched[0].split('=')[1]
+          const title = articleMatched.slice(1).join(' ')
+          acc[date][number] = title
+        })
+      }
+      return acc
+    }, {})
+
+  for (const [dateStr, dateObj] of Object.entries(lines2)) {
+    for (const [articleIndex, articleTitle] of Object.entries(dateObj)) {
+      stt.push({
+        text: `${dateStr} ${articleTitle}`,
+        href: `https:/news.ycombinator.com/item?id=${articleIndex}`
+      })
+    }
+  }
+  const app = new Vue({
+    el: '#vueapp',
+    data() {
+      return {
+        stt,
+      }
+    }
+  })
+
+  </script>
+</body>
+</html>
